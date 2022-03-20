@@ -12,39 +12,42 @@ const bigPictureImage = bigPicture.querySelector('img');
 const cancellButton = bigPicture.querySelector('.cancel');
 // Поиск лайков в блоке большой фотографии
 const bigPictureLikes = bigPicture.querySelector('.likes-count');
+// Поиск комментов в блоке большой фотографии
 const bigPictureCommentsСount = bigPicture.querySelector('.comments-count');
 // Поиск описания к большой фотографии
 const bigPictureDescription = bigPicture.querySelector('.social__caption');
 
-
-// Функция очистки данных у окна с большой фотографией
-function clearDataBigPicture () {
-  // Очистка комментариев под фото
-  const bigPictureCommentsItem = bigPicture.querySelectorAll('.social__comment');
-  for (let j = 0; j < bigPictureCommentsItem.length; j++) {
-    bigPictureCommentsItem[j].remove();
-  }
-  bigPictureLikes.textContent = '';
-  bigPictureImage.src = '';
-  bigPictureImage.alt = 'Фотография пользователя';
-  bigPictureDescription.textContent = '';
-}
+// Закрытие окна с большой фотографией по клику на крестик
+cancellButton.addEventListener('click', () => {
+  closePopup();
+});
 
 // Функция для закрытия окна с большой фотографией по нажатию Escape
 const onPopupEscapeKeydown = (evt) => {
   if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    bigPicture.classList.add('hidden');
-    document.body.classList.remove('modal-open');
     closePopup();
   }
 };
 
-// Удаление обработчика функции закрытия по Escape
+// Закрытие и удаление обработчика закрывания
 function closePopup () {
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onPopupEscapeKeydown);
-  // Очистить данных окна с большой картинки после закрытия
   clearDataBigPicture();
+
+  // Функция очистки данных у окна с большой фотографией
+  function clearDataBigPicture () {
+    // Очистка комментариев под фото
+    const bigPictureCommentsItem = bigPicture.querySelectorAll('.social__comment');
+    for (let j = 0; j < bigPictureCommentsItem.length; j++) {
+      bigPictureCommentsItem[j].remove();
+    }
+    bigPictureLikes.textContent = '';
+    bigPictureImage.src = '';
+    bigPictureImage.alt = 'Фотография пользователя';
+    bigPictureDescription.textContent = '';
+  }
 }
 
 // Функция открытия большой фотографии
@@ -59,11 +62,11 @@ const openBigPicture = function (pictureIndex) {
     // Меняем ссылку картинки
     bigPictureImage.src = `./photos/${  pictureIndex + 1 }.jpg`;
     // Вставляем лайки количественно
-    bigPictureLikes.textContent = (miniPictureLikes.textContent);
+    bigPictureLikes.textContent = miniPictureLikes.textContent;
     // Вставляем комменты количественно
-    bigPictureCommentsСount.textContent = (miniPictureComments.textContent);
+    bigPictureCommentsСount.textContent = miniPictureComments.textContent;
     // Вставляем описание к большой фотографии
-    bigPictureDescription.textContent = (createDataUsers[pictureIndex].description);
+    bigPictureDescription.textContent = createDataUsers[pictureIndex].description;
     // Снимаем класс hidden для открытия большой картинки
     bigPicture.classList.remove('hidden');
     // Отключаем скролл фона
@@ -79,13 +82,6 @@ const openBigPicture = function (pictureIndex) {
 for (let i = 0; i < miniPicture.length; i++) {
   openBigPicture(i);
 }
-
-// Закрытие окна с большой фотографией по крестику
-cancellButton.addEventListener('click', () => {
-  bigPicture.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  closePopup();
-});
 
 // Скрытие .social__comment-count и .comments-loader (Согласно ТЗ по ДЗ 7)
 bigPicture.querySelector('.social__comment-count').classList.add('hidden');
