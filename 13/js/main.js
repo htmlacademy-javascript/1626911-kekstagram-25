@@ -1,14 +1,30 @@
-/*
-Модуль получения данных от сервера
 
-После успешной загрузки данных с сервера fetch вызывает функцию публикации миниатюр,
-далее появляется возможность кликнуть по фото, при открытии большой фотографии
-подключается модуль прогрузки и слежения за комментариями
-*/
+//Модуль получения данных от сервера
 import { getData } from './api.js';
-getData();
-
-/*
-Данный модуль отвечает за отправку фотографии на сервер.
-*/
+// Модуль отправки формы с фотографией
 import './formWork.js';
+// Модуль изменения размера картинки в форме
+import './formWorkScale.js';
+// Модуль создания миниатюр на странице
+import {drowThumbnails} from './drowThumbnails.js';
+
+import { showAlert } from './util.js';
+
+// Массив данных, подгружается из getData
+let photoDataArray;
+
+getData().then((data) => {
+  photoDataArray = data;
+})
+
+  .then(() => {
+    if (photoDataArray === false) {
+      showAlert('Не удалось загрузить данные с сервера, попробуйте обновить зайти позднее!', 16000);
+    }
+    else {
+      drowThumbnails(photoDataArray);
+    }
+
+  });
+
+export {photoDataArray};
