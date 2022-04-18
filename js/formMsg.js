@@ -1,4 +1,25 @@
-function showFormSuccess () {
+// Импорт функции закрытия окна по escape
+import {isEscapeKey} from './util.js';
+
+// Имя активного окна с информацией
+let activeWindow;
+
+// Закрытие активного окна
+const closeActiveWindow = () => {
+  activeWindow.remove();
+  activeWindow = '';
+};
+
+// Слежение за escape
+const msgEscapeKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    closeActiveWindow();
+    document.removeEventListener('keydown', msgEscapeKeydown);
+  }
+};
+
+
+const showFormSuccess = () => {
   // Поиск template
   const templateSucsess = document.querySelector('#success').content;
   // Поиск внутри template блок success
@@ -8,15 +29,20 @@ function showFormSuccess () {
   // Пушим на страницу
   document.body.appendChild(successClone);
 
+  const success = document.querySelector('.success');
+  activeWindow = success;
+
   const successButton = document.querySelector('.success__button');
   successButton.addEventListener('click', () => {
-    const success = document.querySelector('.success');
-    success.remove();
+    closeActiveWindow();
     document.removeEventListener('click', successButton);
   });
-}
 
-function showFormError () {
+  // Подключение функции закрытия большого окна по нажатию Escape
+  document.addEventListener('keydown', msgEscapeKeydown);
+};
+
+const showFormError = () => {
   const imgUploadButton = document.querySelector('.img-upload__input');
 
   // Поиск template
@@ -28,14 +54,19 @@ function showFormError () {
   // Пушим на страницу
   document.body.appendChild(errorClone);
 
+  const error = document.querySelector('.error');
+  activeWindow = error;
+
   const errorButton = document.querySelector('.error__button');
   errorButton.addEventListener('click', () => {
     imgUploadButton.click();
-    const error = document.querySelector('.error');
-    error.remove();
+    closeActiveWindow();
     document.removeEventListener('click', errorButton);
   });
-}
+
+  // Подключение функции закрытия большого окна по нажатию Escape
+  document.addEventListener('keydown', msgEscapeKeydown);
+};
 
 
 export {showFormSuccess, showFormError};
